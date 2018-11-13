@@ -7,12 +7,12 @@ namespace VikingNotes.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.Quizs", "Cancel", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Quizs", "Delete", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Quizs", "Cancel");
+            DropColumn("dbo.Quizs", "Delete");
         }
     }
 }

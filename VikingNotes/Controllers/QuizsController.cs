@@ -23,6 +23,7 @@ namespace VikingNotes.Controllers
         {
             _context = new ApplicationDbContext();
         }
+        
 
         [Authorize]
         public ActionResult MyQuiz() // step 33: creating new action
@@ -34,9 +35,7 @@ namespace VikingNotes.Controllers
                 .ToList();
             return View(quizs);
         }
-
-
-
+        
 
 
         [Authorize] // step 11: prompting the user to be logged in
@@ -45,11 +44,10 @@ namespace VikingNotes.Controllers
             //step 10 I: create viewModel and set the genre
             var viewModel = new QuizFormViewModel
             {
-                Genres = _context.Genres.ToList(),
-                Heading = "Add a Quiz"
+                Genres = _context.Genres.ToList()
             };
-            return View("QuizForm", viewModel);
 
+            return View("QuizForm", viewModel);
         }
 
        
@@ -92,7 +90,7 @@ namespace VikingNotes.Controllers
             _context.Guizzes.Add(quiz);
             _context.SaveChanges();
 
-            return RedirectToAction("QuizIndex", "Home"); // redirecting the user to the homepage --> later to the list of all the upcoming quizzes
+            return RedirectToAction("QuizsIndex", "Home"); // redirecting the user to the homepage --> later to the list of all the upcoming quizzes
         }
         #endregion
 
@@ -144,7 +142,7 @@ namespace VikingNotes.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("QuizIndex", "Home");
+            return RedirectToAction("QuizsIndex", "Home");
         }
 
 

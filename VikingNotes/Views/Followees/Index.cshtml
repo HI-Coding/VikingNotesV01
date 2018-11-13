@@ -1,0 +1,15 @@
+﻿@model IEnumerable<VikingNotes.Models.ApplicationUser>
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>My Followings</h1>
+<ul>
+    @foreach (var user in Model)
+    {
+        <li>@user.Name</li>
+    }
+</ul>

@@ -7,8 +7,9 @@ namespace VikingNotes.Models
     {
         public DbSet<Quiz> Guizzes { get; set; } // step 3c
         public DbSet<Genre> Genres { get; set; } // step 4
-        public DbSet<Attendance> Attendances { get; set; } 
-
+        public DbSet<Relationship> Relationships { get; set; } 
+      
+        
 
 
         public ApplicationDbContext()
@@ -24,10 +25,14 @@ namespace VikingNotes.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u =>u.Followers)
+                .WithRequired(f =>f.Followee)
+                .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Attendance>()
-                .HasRequired(a =>a.Quiz)
-                .WithMany()
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u => u.Followees)
+                .WithRequired(f => f.Follower)
                 .WillCascadeOnDelete(false);
 
 

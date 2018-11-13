@@ -206,9 +206,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\QuizsController.cs" />
+    <Compile Include="Controllers\FolloweesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\QuizsController.cs" />
+    <Compile Include="Controllers\RelationshipsController.cs" />
+    <Compile Include="Dtos\FollowingDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -248,20 +251,21 @@
     <Compile Include="Migrations\201811051837252_AddCancelToQuiz.Designer.cs">
       <DependentUpon>201811051837252_AddCancelToQuiz.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201811131035255_AddAttendance.cs" />
-    <Compile Include="Migrations\201811131035255_AddAttendance.Designer.cs">
-      <DependentUpon>201811131035255_AddAttendance.cs</DependentUpon>
+    <Compile Include="Migrations\201811131103446_AddFollowerFolloweeRelationship.cs" />
+    <Compile Include="Migrations\201811131103446_AddFollowerFolloweeRelationship.Designer.cs">
+      <DependentUpon>201811131103446_AddFollowerFolloweeRelationship.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
-    <Compile Include="Models\Attendance.cs" />
+    <Compile Include="Models\Relationship.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Quiz.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\QuizsViewModel.cs" />
     <Compile Include="ViewModel\QuizFormViewModel.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
   </ItemGroup>
@@ -289,15 +293,12 @@
     <Content Include="Image\semester8.png" />
     <Content Include="Image\semester9.png" />
     <Content Include="Image\VikingNotesLogo.png" />
-    <Content Include="IndexStylesheet.css" />
-    <Content Include="Rating.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Project.Process.Documentation" />
-    <Content Include="Views\Rating\Rating.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -344,8 +345,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Quizs\QuizForm.cshtml" />
-    <Content Include="Views\Home\QuizIndex.cshtml" />
+    <Content Include="Views\Shared\Quizs.cshtml" />
     <Content Include="Views\Quizs\MyQuiz.cshtml" />
+    <Content Include="Views\Followees\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -391,8 +393,8 @@
     <EmbeddedResource Include="Migrations\201811051837252_AddCancelToQuiz.resx">
       <DependentUpon>201811051837252_AddCancelToQuiz.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201811131035255_AddAttendance.resx">
-      <DependentUpon>201811131035255_AddAttendance.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201811131103446_AddFollowerFolloweeRelationship.resx">
+      <DependentUpon>201811131103446_AddFollowerFolloweeRelationship.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

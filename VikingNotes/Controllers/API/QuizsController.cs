@@ -21,7 +21,7 @@ namespace VikingNotes.Controllers.API
         }
 
         [HttpDelete]
-        public IHttpActionResult Cancel(int id)
+        public IHttpActionResult Delete(int id)
         {
             var userId = User.Identity.GetUserId();
 

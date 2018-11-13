@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using VikingNotes.Models;
 using System.Data.Entity;
+using VikingNotes.ViewModel;
 
 namespace VikingNotes.Controllers
 {
@@ -20,7 +20,7 @@ namespace VikingNotes.Controllers
         }
 
 
-        public ActionResult QuizIndex()
+        public ActionResult QuizsIndex()
         {
             // steop 29c: creating the model and returning it
             // include takes a string parameter. This would be the Author's name.
@@ -29,9 +29,16 @@ namespace VikingNotes.Controllers
                 .Include(m => m.Author)
                 .Include(g=> g.Genre)
                 .Where(m => m.Creation > DateTime.Now);
-            return View(RecentQuizzes);
-        }
 
+            var viewModel = new QuizsViewModel
+            {
+                RecentQuizzes = RecentQuizzes,
+                ShowActions = User.Identity.IsAuthenticated,
+                Heading = "Recent Quizzes"
+            };
+
+            return View("Quizs", viewModel);
+        }
 
         public ActionResult Index()
         {
