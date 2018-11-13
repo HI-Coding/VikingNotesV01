@@ -1,0 +1,287 @@
+﻿body {
+    font: 12px/18px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    /*background: transparent url('images/'') left center;*/
+}
+
+
+.container {
+    width: 500px;
+    margin: 100px auto;
+    text-align: center;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+ul.rating {
+    background: url(images/RatingImage.png) bottom;
+    height: 21px;
+    width: 115px;
+    overflow: hidden;
+}
+
+
+    ul.rating li {
+        display: inline
+    }
+
+
+.rating a {
+    display: block;
+    width: 23px;
+    height: 21px;
+    float: left;
+    text-indent: -9999px;
+    position: relative;
+}
+
+
+    .rating a:hover {
+        background: url(images/star.jpg) center;
+        width: 115px;
+        margin-left: -92px;
+        position: static;
+    }
+
+    .rating a:active {
+        background-position: top;
+    }
+
+
+
+
+/* rating-w-images*/
+.rating-w-images li {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    background: transparent url('images/RatingImage.png') no-repeat left top;
+}
+
+    .rating-w-images li.rated {
+        background-position: 0 0;
+    }
+
+    .rating-w-images li.half-rated {
+        background-position: -30px 0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+@font-face {
+    font-family: '[set]Foundicons';
+    src: url('fonts/[set]_foundicons.eot');
+    src: url('fonts/[set]_foundicons.eot?#iefix') format('embedded-opentype'), url('fonts/[set]_foundicons.woff') format('woff'), url('fonts/[set]_foundicons.ttf') format('truetype'), url('fonts/[set]_foundicons.svg#[set]Foundicons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+/* Lists*/
+
+.rating-w-fonts {
+    font: 3em/3em '[set]Foundicons', sans-serif;
+    display: inline;
+    cursor: pointer;
+}
+
+    .rating-w-fonts li.rated {
+        color: #ABC471;
+    }
+
+
+
+/* sprite section*/
+.rate {
+    color: black;
+    cursor: pointer;
+    display: inline;
+}
+
+    .rate:hover {
+        color: red;
+    }
+
+.rate-item {
+    float: left;
+    cursor: pointer;
+    margin: 0px 15px 0px 15px;
+}
+
+    .rate-item:hover ~ .rate-item {
+        color: #ABC471;
+    }
+
+
+
+/* Rating section v2*/
+article {
+    padding-left: 50px; /* arbitrary, to expose the "zero stars" area half a star to the left of the first star.*/
+}
+
+.star-rating {
+    margin: 0 auto;
+    display: inline-block;
+}
+/* radio button stars */
+
+/* you can easily stuff the generation of these repetitive chunks of CSS into a server-side language like ASP */
+.rb0:checked ~ .rating,
+label.rb0l:hover ~ .rating {
+    width: 0px; /* no stars */
+}
+
+.rb1:checked ~ .rating,
+label.rb1l:hover ~ .rating {
+    width: 16px; /* half a star */
+}
+
+.rb2:checked ~ .rating,
+label.rb2l:hover ~ .rating {
+    width: 32px; /* a star */
+}
+
+.rb3:checked ~ .rating,
+label.rb3l:hover ~ .rating {
+    width: 48px; /* 1.5 stars */
+}
+
+.rb4:checked ~ .rating,
+label.rb4l:hover ~ .rating {
+    width: 64px; /* 2 stars */
+}
+
+.rb5:checked ~ .rating,
+label.rb5l:hover ~ .rating {
+    width: 80px;
+}
+
+.rb6:checked ~ .rating,
+label.rb6l:hover ~ .rating {
+    width: 96px;
+}
+
+.rb7:checked ~ .rating,
+label.rb7l:hover ~ .rating {
+    width: 112px;
+}
+
+.rb8:checked ~ .rating,
+label.rb8l:hover ~ .rating {
+    width: 128px;
+}
+
+.rb9:checked ~ .rating,
+label.rb9l:hover ~ .rating {
+    width: 144px;
+}
+
+.rb10:checked ~ .rating,
+label.rb10l:hover ~ .rating {
+    width: 160px; /* 5 stars */
+}
+
+.star-rating label.star {
+    width: 16px; /* half star */
+    left: -16px; /* half star */
+    padding: 0;
+    height: 40px; /* whole star + 2x padding (4px each for top and bottom) */
+    position: relative;
+    z-index: 3;
+    float: left;
+}
+
+    .star-rating label.star.last {
+        width: 32px;
+    }
+
+/* hide inputs (RBs and their labels) */
+.star-rating input[type=radio],
+.star-rating label.rb {
+    display: none;
+}
+
+/* using icons found at http://www.easyicon.cn/language.en/icondetail/523835/ */
+.rating {
+    background: url(http://cdn-img.easyicon.cn/png/5238/523834.gif) repeat-x top left;
+    position: relative;
+    z-index: 2;
+    top: 4px; /* 1x padding */
+    height: 32px; /* whole star */
+    width: 0px;
+}
+
+.rating-bg {
+    background: url(http://cdn-img.easyicon.cn/png/5238/523835.gif) repeat-x top left;
+    position: relative;
+    z-index: 1;
+    top: -28px; /* 1 whole star - 1x padding */
+    height: 32px; /* whole star */
+    width: 160px;
+}
+
+/* IE8 fallback to radio buttons */
+.ie8 .star-rating input,
+.ie8 .star-rating label.rb {
+    display: inline-block;
+}
+
+.ie8 .rating,
+.ie8 .rating-bg,
+.ie8 .star-rating label.star {
+    display: none;
+}
+
+
+
+/* rating  v3*/
+.rating {
+    float: left;
+    width: 300px;
+}
+
+    .rating span {
+        float: right;
+        position: relative;
+    }
+
+        .rating span input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            opacity: 0;
+        }
+
+        .rating span label {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            color: #FFF;
+            background: #ccc;
+            font-size: 30px;
+            margin-right: 2px;
+            line-height: 30px;
+            border-radius: 50%;
+            -webkit-border-radius: 50%;
+        }
+
+        .rating span:hover ~ span label,
+        .rating span:hover label,
+        .rating span.checked label,
+        .rating span.checked ~ span label {
+            background: #F90;
+            color: #FFF;
+        }

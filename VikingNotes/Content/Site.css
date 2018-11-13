@@ -1,0 +1,244 @@
+﻿body {
+    padding-top: 80px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+/* creating some vertical line spaces */
+.verOffset1 { margin-top: 2px;}
+.verOffset2 { margin-top: 5px;}
+.verOffset3 { margin-top: 10px;}
+.verOffset4 { margin-top: 15px;}
+.verOffset5 { margin-top: 30px;}
+.verOffset6 { margin-top: 40px;}
+.verOffset7 { margin-top: 50px;}
+
+/* Overriding the default color syle of bootstrap*/
+/* step 23*/
+
+span.field-validation-error {
+    color: red;
+    font: initial;
+}
+
+/* navigation bar color*/
+.navbar-inverse {
+    background-color: #ff4242;
+    border-color: #ff4242;
+}
+
+
+/* color of the elements such as Create Quiz in the menu bar*/
+.navbar-inverse .navbar-nav > li > a {
+    color: #ffff;
+}
+
+
+/* name of the application */
+.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+
+
+/* navigation bar for dropdown list*/
+    .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+        /*background-color: #f1232385; */
+        background-color: rgba(206, 40, 40, 0.55);
+    }
+
+.dropdown-menu {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+/* font size for the application name*/
+.navbar-brand { 
+    font-weight: 700;
+}
+
+
+body {
+    font-size: 15px;
+}
+
+/* open bootstrap.css in the content folder and find these and add Lato  font style as first*/
+body, 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* increasing the margin from default 15px to 20px */
+.form-group {
+    margin-bottom: 15px;
+}
+
+
+/* font size of the input text in the text boxes.*/
+.form-control {
+    font-size: 15px;
+    height: 42px;
+    -ms-border-radius: 7px; /* suggested by Resharper to be compatable to older browsers*/
+    border-radius: 6px;
+}
+
+
+/* right click on the input box and chose the color and uncheck the shadow*/
+.form-control:focus {
+    border-color: #319cf1;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+
+/* submit button */
+.btn {
+    /*padding: 7px 15px;*/ /*instead of padding can add btn-lg in the <button class="">*/
+    font-size: 15px;
+    -ms-border-radius: 9px;
+    border-radius: 9px;
+}
+
+.footer {
+    color: white;
+    background-color: #ff4242;
+    border-color: #ff4242;
+    font-style: italic;
+    font-size: 0.6em;
+    text-align: center;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+
+/* step 32: creating the style for recent quizzes*/
+/* page level styles -- '>'  the li immediately below quiz elements*/
+
+.quizs {
+    list-style: none;
+}
+
+.quizs > li {
+        position: relative;
+        margin: 30px;
+    }
+
+
+.quizs > li .date {
+    background: orangered;
+    color: white;
+    text-align: center;
+    width: 35px;
+    -ms-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.quizs > li .date .month {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 3px 6px;
+}
+
+    .quizs > li .date .day {
+        background: gray;
+        color: white;
+        font-size: 20px;
+        padding: 1px 12px;
+    }
+
+/* detail contain position is set to absolute*/
+        .quizs > li .details {
+        position: absolute;
+        top: 0;
+        left: 70px;
+    }
+
+        .quizs > li .details .author {
+            font-weight: bolder;
+            display: block;
+        }
+
+.quizs > li .details .genre {
+    font-size: 13px;
+}
+
+/* to hide the Edit*/
+.quizs > li .actions  {
+    font-size: 15px;
+    display: none;
+}
+
+
+/* show the Edit, when the user hover the mouse over the li*/
+.quizs > li:hover .actions {
+    display: block;
+}
+
+
+
+
+
+
+/* rating system*/
+.rating {
+    color: orange;
+    border-radius: 30px;
+    padding: 3px 6px;
+    position: relative;
+    margin: 30px;
+}
+
+
+
+/* Rating system */
+.vote-up-off, .vote-up-on, .vote-down-off, .vote-down-on, .star-on, .star-off {
+    height: 30px;
+}
+.vote-up-off {
+    background-position: 0 -170px;
+}
+.vote-up-off, .vote-up-on, .vote-down-off, .vote-down-on, .star-on, .star-off, .vote-accepted-off, .vote-accepted-on {
+    text-indent: -9999em;
+    font-size: 1px;
+}
+.vote-up-off, .vote-down-off, .vote-accepted-off, .star-off {
+    cursor: pointer;
+}
+.vote-up-off, .vote-up-on, .vote-down-off, .vote-down-on, .star-on, .star-off, .vote-accepted-off, .vote-accepted-on {
+    display: block;
+    margin: 0 auto;
+    text-indent: -999em;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 2px;
+}

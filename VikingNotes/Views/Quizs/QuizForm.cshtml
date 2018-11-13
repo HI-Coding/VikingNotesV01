@@ -1,0 +1,114 @@
+﻿<!-- step 10a: linking to the model -->
+@model VikingNotes.Views.ViewModel.QuizFormViewModel
+
+@{
+    ViewBag.Title = Model.Heading;
+}
+
+<!-- step 9c: Creating Create.cshtml for the QuizsController -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+
+
+<h2>@Model.Heading</h2>
+<!-- step 10b: adding a <Form><Form> and form-groups. In Step 12 it is changed to BeginForm -->
+<!-- step 22a -->
+@using (Html.BeginForm(Model.Action, "Quizs"))
+{
+    <p class="alert alert-info"> All fields are <strong> requried </strong>.</p>
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    <div class="form-group">
+        @* step 10b*@
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", PlaceHolder = "Quiz Title", autofocus = "autofocus" })
+        @Html.ValidationMessageFor(m => m.Title)
+    </div>
+
+    <div class="form-group">
+        @* step 10b*@
+        @Html.LabelFor(a => a.Author)
+        @Html.TextBoxFor(a => a.Author, new { @class = "form-control", PlaceHolder = "Author Name" })
+        @Html.ValidationMessageFor(m => m.Author)
+
+    </div>
+
+
+    @* step 10g*@
+    <div class="form-group">
+        @Html.LabelFor(g => g.Genre)
+        @Html.DropDownListFor(g => g.Genre, new SelectList(Model.Genres, "ID", "Name"), " ", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Genre)
+    </div>
+    <!-- After adding selectList and running the code, an exception is thrown
+    Fix: in the QuizController.cs need to populate from the DbContext and adding the genre
+    from the ViewModel to the list. 2. Need to add a blank string " " for the blank 1st item
+    the 4th argument is a html attribut to class-->
+
+    <div class="form-group">
+        @* step 10*@
+        @Html.LabelFor(m => m.Creation)
+        @Html.TextBoxFor(m => m.Creation, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Creation)
+    </div>
+
+    <div class="form-group">
+        @* step 10b*@
+        @Html.LabelFor(m => m.Description)
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Title)
+    </div>
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="checked"> Check
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+
+    <div class="rating">
+        @for (int i = 0; i < @Model.Rating; i++)
+        {
+            <i class="fas fa-star"></i>
+            @*<i class="far fa-star"></i>*@
+        }
+
+        @for (int i = 0; i < @Model.Rating; i++)
+        {
+            <i class="far fa-star"></i>
+        }
+    </div>
+}
+
+
+
+<body>
+<h1>
+    <i class='fas fa-caret-up' style='font-size:48px;color:gray'></i> <br>
+    <i class='fas fa-caret-down' style='font-size:48px;color:gray'></i>
+    <br>
+</h1>
+
+
+
+<div class="votecell post-layout--left">
+    <div class="vote">
+        <input type="hidden" name="_id_" value="53152435">
+        <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>
+        <span itemprop="upvoteCount" class="vote-count-post ">0</span>
+        <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>
+
+        <a class="star-off" href="#" title="Click to mark as favorite question (click again to undo)">favorite</a>
+        <div class="favoritecount"><b></b></div>
+    </div>
+</div>
+
+</body>
+
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryal")
+}

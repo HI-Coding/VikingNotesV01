@@ -1,0 +1,418 @@
+﻿
+Repo: https://dev.azure.com/sayedemal/_git/VikingNotes
+
+---------- Model, Migration, convention -------------
+***********************************************************************************
+step 1 : enable, add, update migration - InitialModel to populate the database with the generated
+		models for user.
+			this code created ->  public partial class InitialModel : DbMigration
+step 2: Created Quiz and Genre classes in the Models.
+step 3 a: Add these changes to the database via add migration. add-migration AddQuizGenreTables
+step 3b: The migration file created is empty. This is becuase there is no reference to this file
+		in the IdentityModels.cs so EF doesnt know about it.
+step 3c: Adding reference to the identityModel.cs ->  public DbSet<Quiz> Guizzes { get; set; }
+step 4: Quiz know about the genre, so no need to add ekstra dbset, but in order to querry genres,
+		there needs to be added another set of dbset ->  public DbSet<Genre> Genres { get; set; }
+step 5: The two classes are being seperated. ApplicationDbContext.cs and to IdentityModels.cs
+		IdentityModels.cs is renamed to match class type -> ApplicationUser.cs
+steop 6: Now add-migration AddQuizGenreTables once more using -force to override it. 
+			-> add-migration AddQuizGenreTables -force  and then inspect the created file. 
+			Then update-database. inspect tables.
+
+step 7a: Inspecting the quiz and genre tables in the dtabase, will show that some fields are nullable. 
+this can be overriden.
+step 7b: Overriding the conventions. In the quiz.cs & Genre.cs file the properties are being decorated
+			with [required] attributes.
+			 Overriding convention -> override convention for quizs and genres properties to override 
+			nullable by adding required attributes.
+step 7c: add-migration OverrideconventionsForQuizAndGenres . and update the database.
+		 (this step is skipped as the attributes were attached in forehand.)
+
+Creating list of Genres in the database
+=======================================
+step 8a: populating the database with a list of dropdown for genres.
+step 8b. adding an empty migration and then implement with some sql statments in the up() down()
+step 8c: update-database and then inspect the genre table.
+
+// ******  Steop 1-8 included the steps for the Model, Migrations in the database to trnasfer the changes.
+***********************************************************************************
+
+
+
+--------- Controller -----------
+***********************************************************************************
+building a form using bootstrap
+===============================
+step 9a: first adding a controler -> QuizsController.cs rename name of the action from index to Create
+step 9b: now adding a view to this controller in the view's Quizs folder.
+step 9c: first add Folder calling it 'Quizs' to match the controller. then add a View to this folder call it 'Create.cshtml'.
+step 9d: going to http://localhost:60253/Quizs/Create will show the created view
+step 9e: to view the Create, there is added a link in the navigation bar to access it from the navigation bar.
+			Views -> Shared -> _Layout.cshtml. then added this line
+             <li>@Html.ActionLink("Create Quiz", "Create", "Quizs")</li>
+
+building the form using bootstrap:
+==================================
+step 10a: adding the reference at the top -> @model VikingNotes.Models.Quiz to specify the model behind this view.
+step 10b: add a form and implement a form-group. Then add a title,Author,Description with a text box.
+step 10c: add another form group and add Date Time. for date time we need to seperate properties.
+			here we use presentation or ViewModel, which is purely used for presentation.
+step 10d: Adding a new folder at the project, ViewModels and add QuizFormViewModel.cs
+			implement the class with properties of Quiz model.
+step 10e: In the Create.cshtml at the top the reference should be changed from (quiz) VikingNotes.Models.Quiz to
+(QuizFormViewModel) VikingNotes.ViewModels.QuizFormViewModel
+step 10f: Now adding other form groups of the properties of the Quiz.
+step 10g: Adding a dropdown list for the genre. the viewmodel has no Genre, so it must be created first.
+			running the program will throw a null reference exception. 
+			That is because the genre model is not populated in the view model.
+step 10h: That is the job of the QuizsController. In the QuizsController.cs will be added a dbContext to retrieve the
+			list of genre from the database. Building the constructor. 
+step 10 IW: We got the context, then create viewModel and set this genre property.
+			by Implementing the ActionResult for Create(). 
+			where we create a viewModel and create this genre property.
+			Then put the viewModel inside the View as return value.
+step 10j: commit to the repository.
+
+Note: Used viewModel in this section becuase the new properties being added for the purpose of
+presentation is better to be placed in a seperate view model, not in the actual Model. 
+because everytime adding some extra features to the model, would make it troublesom.
+changing the Model would require to add migration and update the database. 
+***********************************************************************************
+
+
+Saving Data - limiting only to those logged in / registered.
+============================================================
+step 11: [Authorize] added to the Create action in the QuizsController.cs to prompt user to log in
+		(limiting only to logged in users to create quiz). 
+		clicking on the Create Quiz will redirect to the log in page for registration.
+step 12: Converting the Form to BeginForm in ASP.NET MVC
+		We need to specify a target for this form. When this form is posted an action is being executed.
+		This is done by changing the <Form> to @using (Html.BeginForm("Create", "Quizs"))
+
+step 13a: Need to create a controller. Creating an actionResult Create(QuizFormViewModel) with a paramter of QuizFormViewModel
+		because that is the model behind the view. So when the form is posted, the create action will be called.
+step 13b: Adding some attributes such as authorizing, HTTPPost, as only being called via HTTP post method.
+step 13c: Inside the create() needs to create a Quiz and set the properties.
+step 13d: Throws an exception on this line of code: 
+				Line 47:   var author = _context.Users.Single(u => u.Id == User.Identity.GetUserId());
+				fix: to pass it as a variable   
+				var authorId = User.Identity.GetUserId();
+				//var author = _context.Users.Single(u => u.Id == authorId);
+step 13e: Run the program and fill the form. Must remember to give the correct date time that matches the local
+				datetime format. 20 july 2019
+				then checking the database will show that the form is registered in the database.
+
+step 14:	modified the Quiz Model by adding FK ids to set use them instead of Author and Genres, while accessing them. 
+
+
+dropped step 14a
+step 14a: Since the datetime parsing should be the responsibility of the ViewModel and not the controller, therefore
+		it would be moved to the ViewModel class.
+step 14b: the datetime method is created inside the viewModel class. 
+			 public DateTime GetDateTime() { return DateTime.Parse($"{Date} {Time}");}
+			 this is directly created as a method. This way MVC will not touch this property using reflection to check
+			 the if() clause.
+***********************************************************************************
+
+validation - server side
+========================
+step 15: in the QuizformViewModel the properties are decorated with [Required].
+step 16: In the view side, in Create.cshtml file will be implemented the validation place holder for each property.  
+@Html.ValidationMessageFor(m => m.Title)
+step 17a: In the controller, QuizsController.cs must be modified as well.
+step 17b: In the Create action should check if the model is valid. if not return the same view.
+			otherwise, redirect the user to the home page.
+
+Droped --> custom Validation for date time
+step 18a: The input date time should be valid as a future date time.
+step 18b:  In the viewModel will be created two classes called FutureDate and Futetime.
+step 18c: Must add the [FutureDate] [FutureTime] to the properties of the QuizFormviewModel.
+ 
+validation - client side
+========================
+step 19a: in the AppStart /BundleConfig.cs there is clint side validation methods.
+ bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+                        "~/Scripts/jquery.validate*"));
+	under scripts/ there is jquery.validation and jquery.validate.unobtrusive. 
+	these files can be returned only on the pages we need instead of every page.
+	we need to add this bundle to the Create.cshtml.
+	in the bottom of the _Layout.cshtml, there is added   
+	@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+	but not the jqueryVal. There for, we need to add it to the Create view.
+step 19b: If section script is not added, the content of the view would be placed in the  @RenderBody() in the _Layout.cshtml.
+			which in result we dont have jquery, becuase the jquery is places in the bottom.
+			that is the reason need to add an addition script in the script section. @RenderSection("scripts", required: false)
+			so at this point both jquery and bootstrap are downloaded.
+Note: before client side validation, right click and inspect, then Network. Then click submit
+		there will be shown the list of actions being called, such as Create, main.js, modernizr...
+		after validation, there is no request to the server in the Network tab.
+
+Front page - menu bar optimization
+========================
+LoginPartial.cshtml - dropdown toggle login info
+step 20: this file in the shared folder will be modified to
+
+              <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.GetUserName() <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">My Comments</a></li>
+                        <li><a href="#">My Quizzes</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">History</a></li>
+                        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+
+                    </ul>
+                </li>
+
+step 21: Adding semesters to the front page.
+
+
+Preventing site's vulnerablity
+==============================
+step 22a: adding @Html.AntiForgerytoken() to the Creat.cshtml in the view Quiz.
+step 22b: Added [ValidateAntiForgeryToken] at the QuizsController.cs
+
+
+Overriding the default style and color of the bootstrap
+=======================================================
+step 23: Clicking on the navigation bar right click and then element then change the color to ff4242, for border ff4242
+		 then right click on an element and then  change color to ffff as white.
+step 24: added font to the _Layout.cshtml file right under the VikingNotes title.
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+step 25: /* open bootstrap.css in the content folder and find these and add Lato  font style as first*/
+body, 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+step 26: Then add the link at the _Layout.cshtml file at the top under the Title.
+step 28a: added     <p class="alert alert-info"> All fields are <strong> requried </strong>.</p>
+				to the Creat.cshtml.
+step 28b:  added auto focus on the first input box.
+
+
+Extending ASP.NET Identity Users class
+======================================
+step 29a: In the Homecontroller.cs under Index, need to retrieve all the recently posten Quizes.
+		so, there is needed to create a db context and then create a model and return it.
+steop 29b: creating the contstructor
+steop 29c: In the Index() or own created ActionResult QuizIndex(){} action will create the model and return it. 
+		   include takes a string parameter. This would be the Author's name. (This include method is dangerous as it will throw a null exception)
+		   therefor, Will use a different Include method that takes a Lambda expression. to Use that need to import Using System.Data.Entity;
+		   1. the author name would be automatically updated in case of changing the Author name at some point.
+		   2. Filtering in regard to the creation dateTime.  
+		   var RecentQuizzes = _contex.Guizzes
+                .Include(m => m.Author)
+                .Where(m => m.Creation > DateTime.Now);
+            return View(RecentQuizzes);
+
+step 29d: In the view need to create the Quizzes.cshtml file and implement the view
+			include the model and use IEnumerable and then itterate over the Quiz model in a foreach loop
+			to display all the quizzes using a unsorted list <ul></ul>
+step 29e:  In the layout.cshtml added <li>@Html.ActionLink("Recent Quiz", "QuizIndex", "Home")</li> to view on the menu bar.
+
+step 30a:   creating a User Name, which will replace user's email address, as it during registration the user will type a name.
+step 30b:	in the ApplicationUser.cs Model will add a name property. 
+			[Required, MaxLength(100)] // overriding convention.
+			public string Name { get; set; }
+
+step 30c:	After this property addition to the model, there has to be migration and updated the database.
+			under the AspNetUsers.dbo, there will be added a Name collumn.
+
+step 31a:	When the user registers, there is a problem catching up the user name. 
+			Has to modify the sign up form. in the Register.cshtml under View/Account/Register.cshtml.
+
+step 31b:	Adding a form-group for name. The name doesn't exist in the @model VikingNotes.Models.RegisterViewModel
+			so it has to be added. by resharper --> alt+enter and enter will add it to the bottom of RegisterViewModel in the AccountViewModels.cs.
+			No a new filed is added to the registration form.
+step 31c:	When the user enter the name, it needs to be taken and putted in the database.
+step 31d:	in the AccountController.cs by enter the ctrl+F12 will look for Register method.
+			There will be two overloads. The first one is to render the view.
+			The second one which takes a view model, RegisterViewModel() parameter being chosen, 
+			because it is called when click the register button.
+			in the ApplicationUser object construction, will add the UserName property to the list.
+			var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
+step 31e:	log out and register a new user. inspect the AspNetUser.dbo.
+
+step 31 f:  Note: under Models/AccountViewModels.cs open it.
+			Find RegisterviewModel class and alt+enter to move it to a seperate file.
+			but the nameSpace is Models. It needs to be moved under View/ViewModel.
+			Put the cursor on the name of the class.
+			then activate Refactoring command using ctrl+shift+R, then choose move to folder.
+			then at the Target folder write, VikingNotes/ViewModels. 
+			This is the file that we added the UserName property. 
+step 31 g:	Commit to the repository.
+Summery:	Here Extendend the ApplicatioinUser Class.
+			then Added additional properties
+				Created migration
+				Updated database
+				remember to modify the sign up form.
+				for that need to modify the View to add additional fields.
+				also modify the AccountController.cs to persist the changes.
+
+Adding to the look and feel of the Recent Quiz page
+===================================================
+step 32:	Added .Include(g=> g.Genre) in the HomeController.cs in order to remove the null reference exception
+			while implementing the calendar in the QuizIndex.cshtml.
+			added relative and absolute positioning with css attributes.
+
+///////////////////////////////////////////////////////////////////////////////////////
+Second Part 
+
+Implementing CRUD operations
+============================ Implementing Read/Create operation
+step 33a: In QuizsController.cs under constructor will create a new action, Called MyQuiz.
+step 33b: Right click the action and add View.
+			Then copy the <ul> from the QuizIndex.cshtml and paste it in the MyQuiz.cshtml.
+			adding at the top @model IEnumerable<VikingNotes.Models.Quiz>
+			the full implementation now is completed: 
+			var userId = User.Identity.GetUserId();
+            var quizs = _context.Guizzes
+                .Where(m => m.AuthorId == userId && m.Creation > DateTime.Now)
+                .Include(m =>m.Genre)
+                .ToList();
+            return View(quizs)
+step 33c:	Need a link in the navigation bar under the <ul class="dropdown-menu">.
+               <li><a href="@Url.Action("MyQuiz", "Quizs" )">My Quizzes</a></li>
+			action name is MyQuiz and controller is Quizs.
+			lastly in the Quizscontroller.cs at the return redirection Action("QuizIndex", "Home") should be modified.
+			to redirect to the user's created quizes site.
+			commit to the repository.
+
+============================ Refactoring Create operation into Update operation
+step: 34:	How to add hover effect on Eddit or Delete with css
+step 35a:	In the MyQuiz.cshtml under detalis container at the last line added <a href="#">Edit</a>
+			save and view it on the browser.
+step 35b:	will create a hide and hover-show effect. This is created in the Site.css
+			.quizs > li .actions  { font-size: 15px; isplay: none;}
+			.quizs > li:hover .actions { display: block; }
+step 36a:	now creating an action in the controller class to be able to edit a quiz.
+step 35b:	this aciton will be very similar to the Create action. 
+			The one which render the form to let the user add a new Quiz.
+step 35c:	Duplicating the Create action and renmaing it to Edit(int id).
+			need to get the id from the database. To to this there should be a second condition to specify
+			that only the author should be able to edit thier own quizzes. Not everyone else.
+			var userId = User.Identity.GetUserId();
+            var quiz = _context.Guizzes.Single(m =>m.Id == id && m.AuthorId == userId);
+step 35d:	need to initialize the view model with other properties of the Quiz model, beside the list of genres.
+			
+			var userId = User.Identity.GetUserId();
+            var quiz = _context.Guizzes.Single(m =>m.Id == id && m.AuthorId == userId);
+            var viewModel = new QuizFormViewModel
+            {
+                // initialize the genres dropdown list
+                Genres = _context.Genres.ToList(),
+                Creation = quiz.Creation,
+                Genre = quiz.GenreId,
+                Title = quiz.Title,
+                Description = quiz.Description
+            };
+            return View("Create", viewModel);
+
+step 35e:	need to change the edit link. opening the MyQuiz.cshtml
+			adding the <a href="@Url.Action("Edit", "Quizs", new{id = quiz.Id})">Edit</a>
+			name of the action, name of the controller, third, an anonymous object passing the id of the quiz. 
+step 35f:	change the nameo of the page being redirected to Edit Quiz.
+step 36a:	Name refactoring. changing the name of the Create.cshtml to Quizform.cshtml.
+			Then in the Quizscontroller.cs. added or changed the View parameter to QuizForm, return View("QuizForm", viewModel); 
+step 36b:	chaning the heading in the edit MyQuizzes to a dynamic. 
+			in the QuizForm.cshtml change <h2>Create Quiz</h2> to <h2>@model.heading</h2>
+			we don't have the heading property in the view model. <h2>@Model.Heading</h2>
+			For this there is needed to create a Heading property in the QuizFormViewModel.cs
+step 36c:	in the QuizsController.cs we need to set the heading in the create action.
+			Heading = "Add a Quiz" and in the Edit() action add the same Heading = "Edit a Quiz"
+			To make it consistent with the browsers tab name: chang to ViewBag.Title = Model.Heading;
+
+step 37a:	Implement update a quiz. in the QuizForm.cshtml modify this line to dynamic: @using (Html.BeginForm("Create", "Quizs"))
+			change it to @using (Html.BeginForm(Model.Action, "Quizs")). Now the action property needs to be created.
+			will add the Action propert as well in the QuizFormViewModel.cs.
+step 37b:	if this is a new quiz, then will return create. else return update.
+			How to know if it is a new quiz or not. For this we need another property Id.
+			the implementing:  get { return (Id != 0) ? "Update" : "Create"; }
+step 37c:	Lastly, need to modify the QuizForm.cshtml
+			Now that we have the Id, we should render it as a hidden field. So upon posting the form, we know
+			which quiz we are modifying.     @Html.HiddenFor(m=>m.Id)
+
+step 38a:	Creating the update Action. Update actioin is similar to the Create(QuizformViewModel viewModel) action.
+			so copy and paste it. 
+			But instead of creating and adding it to the database, 
+			we pulling out the existing Quiz and modify it's properties.
+            var quiz = _context.Guizzes.Single(m => m.Id == viewModel.Id && m.AuthorId == userId);
+step 38b:	running the applicaiton and edditing a quiz would add a new quiz.
+			That is becuase the in the QuizformViewModel the Action say if the id is not zero update, otherwise create.
+			In this case the id was zero that is why the create action was called.
+			that is because the Id property is not initialized.
+			in the QuizsController.cs going to Edit() action. The id wasn't initialized, as default the id sets to zero.
+			so Id = quiz.Id, is set among the other properties. Then run.
+step 39a:	 var update = (uint => u.Update() ); this anonymous method line would show error.
+			so the solution is to have an expression that represents the update method.
+			with a lambda expression if we update the update method, then the lambda expression would get update automatically.
+			we can use funct delegate to represent this method. c represent the QuizsController. 
+			what this method return, it returns an action, would get an ActionResult when we update this method.
+			we can use Func, which is a delegate to represent this method. Func allows to call this anonymous method.
+			since we dont call this delegate, just using this expression, therefore, convert it into
+             Expression<Func<QuizsController, ActionResult>> update = (c => c.Update(this) );
+			 
+step 39b:	Copy and paste this expression and rename it to Create.
+			// depending on the value of the id, select one of the expressions and get the method name at run time
+			using this expression to extract the method at run time. var action = (Id != 0) ? update : create;
+	        var actionName = (action.Body as MethodCallExpression); // with the above expression extracting the method name at run time.
+			cast it to get method name at run time. from the MethodCallExpression can access to the Method property then name...
+Note: Summery: Use cases, update, Add, 
+				focus on the core use cases first - good foundation
+				Magic string is very fragile, will not compile and the code would break.
+				instead uses labmda expressions.
+Implemented step 30 to 39.
+refactoring Create to QuizForm (Create.cshtml and also in the QuizsController.)
+Added Id to the QuizFormviewModel and added Action and Heading properties to this viewmodel. 
+used lambda expression for the action.
+in MyQuiz.cshtml added Edit and implemented action class in the Site.css.
+
+///////////////////////////////////////////////////////////////////////////
+
+Logically deleting a quiz
+=========================
+
+step 40:	adding a Cancel property in the Quiz.cs model. then do migration and update database.
+step 41a:	implementing the Cancel method. Putting a link next to the Edit. When the user clicks this
+			Ajax will be used to call the server.
+step 41b:	First we need an API. We have a QuizController folder. But we need to create a API folder only for APIs.
+			inside the folder will be created a QuizsController.cs file. Right click add controller --> Web API 2 Controller - Empty.
+step 41c:	creating a class then an action, IHttpActionresult Cancel(int id) action that takes the quiz id.
+step 41d:	we need the context to retrieve it from the database. 
+			Initialize the constructor.
+			Get the quiz that only that specific user has created.
+			call Cancel and save changes to the database.
+			then use the attribute [HttpDelete] becuase using it only calling HTTPpost/Delete/Get.
+step 41e:	use the chrom postman plugin to test it. on the url paste the url of the website.
+			then change the it to the address of the api. http://localhost:60253/api/Cancel/
+			then change attribute to POSt and click raw, then type id of one of the quiz from the databse table.
+
+step 42a:	Now building the UI. Going to MyQuiz.cshtml. add    <a href="#" js-cancel-quiz data-quiz-id="@quiz.Id">Cancel</a>
+			passing the a class that will be create with jquery called js-cancel-quiz.
+			also store the id of the quiz, because it will be needed in jquery code
+step 42b:	creating a script section underneat to make sure that the jquery and bootstrap code are loaded beforehand.
+			 
+	<!--	1. when document is read. this action will be called.
+			2. get all the objects from .js-cancel-quiz
+			3. when it is clicked, this action will be called. 
+			4. first get user confirmation.
+			5. if yes, then using jquery ajax.
+			6. passing a url. and need id of the quiz.
+			7. in the handler in the click event pass an object 'e' click event. 
+			8. source of the event var link and wrap it in a jquery. this will return the cancel event upon clicking. 
+			9. specifying the method. which is delete. 
+			10. then implement the done and fail function. 
+			11. if everything worked, remove the link from the page. here the li will be the parent that represents the quiz-->

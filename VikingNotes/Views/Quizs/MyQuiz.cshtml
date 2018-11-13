@@ -1,0 +1,70 @@
+﻿@model IEnumerable<VikingNotes.Models.Quiz>
+
+@{
+    ViewBag.Title = "MyQuiz";
+}
+
+<h2>My Quiz</h2>
+
+<ul class="quizs  verOffset7">
+    @foreach (var quiz in Model)
+    {
+        <li>
+            <div class="date">
+                <div class="month">@quiz.Creation.ToString("MMM")</div>
+                <div class="day">@quiz.Creation.ToString("d ")</div>
+            </div>
+
+            <div class="details">
+                <div class="author">@quiz.Title</div>
+                <div class="genre">@quiz.Genre.Name</div>
+                <div class="actions">
+                    <a href="@Url.Action("Edit", "Quizs", new {id = quiz.Id})">Edit</a>
+                    |
+                    <a href="#" class="js-cancel-quiz" data-quiz-id="@quiz.Id">Delete</a>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+
+@section scripts
+{
+    <!-- 47b: 1. when document is read. this action will be called. / 2. get all the objects from .js-cancel-quiz
+    3. when it is clicked, this action will be called. 4. first get user confirmation.
+    5. if yes, then using jquery ajax. 6. passing a url. and need id of the quiz.
+    7. in the handler in the click event pass an object 'e' click event. 8. source of the event
+    var link and wrap it in a jquery. this will return the cancel event upon clicking. 
+    9. specifying the method. which is delete. 10. then implement the done and fail function. 
+    11. if everything worked, remove the link from the page. 
+    here the li will be the parent that represents the quiz-->
+
+   <script>
+       $(document).ready(function ()
+       {
+           $(".js-cancel-quiz").click(function (e)
+           {
+               var link = $(e.target);
+
+               if (confirm("Are you sure deleting this quiz?"))
+               {
+                   $.ajax({
+                           url: "/api/Quizs/" + link.attr("data-quiz-id"),
+                           method: "DELETE"
+                   })
+                       .done(function ()
+                       {
+                           link.parents("li").fadeOut(function ()
+                           {
+                               $(this).remove();
+                           });
+                       })
+                       .fail(function ()
+                       {
+                           alert("Error! Delete operation failed");
+                       });
+               }
+           });
+       });
+   </script>
+}
